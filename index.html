@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Memory Card Game</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #cccccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .game-container {
+        background: #2f2f2f;
+        padding: 20px;
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+        width: 350px;
+    }
+
+    h2 {
+        margin-bottom: 15px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .card {
+        background: #555;
+        height: 70px;
+        font-size: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        border-radius: 8px;
+        user-select: none;
+    }
+
+    .card.flipped {
+        background: #ffffff;
+        color: #000;
+        cursor: default;
+    }
+
+    .card.matched {
+        background: #4caf50;
+        color: white;
+        cursor: default;
+    }
+
+    .info {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="game-container">
+    <h2>Memory Card Game</h2>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="info">
+        Moves: <span id="moves">0</span>
+    </div>
+</div>
+
+<script>
+    const symbols = ["🍎","🍌","🍇","🍓","🍎","🍌","🍇","🍓"];
+    const grid = document.getElementById("grid");
+    const movesText = document.getElementById("moves");
+
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let moves = 0;
+
+    // Shuffle cards
+    symbols.sort(() => 0.5 - Math.random());
+
+    // Create cards
+    symbols.forEach(symbol => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.dataset.symbol = symbol;
+        card.innerText = "?";
+        grid.appendChild(card);
+
+        card.addEventListener("click", () => flipCard(card));
+    });
+
+    function flipCard(card) {
+        if (lockBoard) return;
+        if (card === firstCard) return;
+
+        card.classList.add("flipped");
+        card.innerText = card.dataset.symbol;
+
+        if (!firstCard) {
+            firstCard = card;
+            return;
+        }
+
+        secondCard = card;
+        lockBoard = true;
+        moves++;
+        movesText.textContent = moves;
+
+        checkMatch();
+    }
+
+    function checkMatch() {
+        if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
+            firstCard.classList.add("matched");
+            secondCard.classList.add("matched");
+            resetTurn();
+        } else {
+            setTimeout(() => {
+                firstCard.classList.remove("flipped");
+                secondCard.classList.remove("flipped");
+                firstCard.innerText = "?";
+                secondCard.innerText = "?";
+                resetTurn();
+            }, 800);
+        }
+    }
+
+    function resetTurn() {
+        firstCard = null;
+        secondCard = null;
+        lockBoard = false;
+    }
+</script>
+
+</body>
+</html>
