@@ -5,9 +5,6 @@ The goal is to flip cards and find matching pairs with the **minimum number of m
 
 ---
 ## 📂 working
-
-![memory Image](images/m1.jpg)
-
 ---
 
 ![memory Image](images/m2.png)
